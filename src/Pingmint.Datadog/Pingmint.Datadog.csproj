@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>0.0</Version>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Title>Pingmint.Datadog</Title>
+    <PackageId>Pingmint.Datadog</PackageId>
+    <Authors>Joe Gallagher</Authors>
+    <Description>A dotnet library that consumes the Datadog API.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/JoeGaggler/datadog-api-dotnet</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackRelease>true</PackRelease>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
+  <!-- TODO: fix these later -->
+  <PropertyGroup>
+    <NoWarn>CS8618, CS8604</NoWarn>
+  </PropertyGroup>
+
+</Project>

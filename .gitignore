@@ -1,0 +1,7 @@
+# build
+**/obj
+**/bin
+**/nupkg
+
+# macos
+.DS_Store

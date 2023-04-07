@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "pingmint.codegen.json": {
+      "version": "0.10.17",
+      "commands": [
+        "jsoncodegen"
+      ]
+    }
+  }
+}

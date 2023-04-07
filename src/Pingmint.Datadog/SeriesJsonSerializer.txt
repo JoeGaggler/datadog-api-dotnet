@@ -1,0 +1,18 @@
+SeriesRequest
+- series => Series : [Series]
+
+Series
+- metric => Metric : String
+- type => Type : Int32
+- interval => Interval : Int64
+- unit => Unit : String
+- points => Points : [Point]
+- resources => Resources : [Resource]
+
+Point
+- timestamp => Timestamp : Int64
+- value => Value : Int64
+
+Resource
+- type => Type : String
+- name => Name : String

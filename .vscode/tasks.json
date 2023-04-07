@@ -1,0 +1,92 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/Pingmint.Datadog/Pingmint.Datadog.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/test/Pingmint.Datadog.Tests/Pingmint.Datadog.Tests.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "cwd": "${workspaceFolder}/test"
+            }
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/Pingmint.Datadog/Pingmint.Datadog.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/src/Pingmint.Datadog/Pingmint.Datadog.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "dotnet pack",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "pack"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "cwd": "${workspaceFolder}/src/Pingmint.Datadog"
+            }
+        },
+        {
+            "label": "generate serializer",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "tool",
+                "run",
+                "jsoncodegen",
+                "--input",
+                "SeriesJsonSerializer.txt",
+                "--output",
+                "SeriesJsonSerializer.cs",
+                "--class",
+                "Pingmint.Datadog.SeriesJsonSerializer",
+                "-a",
+                "public",
+                "-m"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "cwd": "${workspaceFolder}/src/Pingmint.Datadog"
+            }
+        }
+    ],
+    "inputs": []
+}
