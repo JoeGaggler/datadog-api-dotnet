@@ -11,7 +11,7 @@ Series
 
 Point
 - timestamp => Timestamp : Int64
-- value => Value : Int64
+- value => Value : Decimal
 
 Resource
 - type => Type : String

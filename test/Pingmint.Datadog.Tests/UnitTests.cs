@@ -33,7 +33,7 @@ public class UnitTests
                         new Pingmint.Datadog.Point
                         {
                             Timestamp = 1234567890,
-                            Value = 123
+                            Value = 123.456789m
                         }
                     },
                 }

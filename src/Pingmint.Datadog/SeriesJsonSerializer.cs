@@ -229,7 +229,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 						obj.Value = Next(ref reader) switch
 						{
 							JsonTokenType.Null => null,
-							JsonTokenType.Number => reader.GetInt64(),
+							JsonTokenType.Number => reader.GetDecimal(),
 							var unexpected => throw new InvalidOperationException($"unexpected token type for Value: {unexpected} ")
 						};
 						break;
@@ -458,7 +458,7 @@ public sealed partial class Series
 public sealed partial class Point
 {
 	public Int64? Timestamp { get; set; }
-	public Int64? Value { get; set; }
+	public Decimal? Value { get; set; }
 }
 public sealed partial class Resource
 {
