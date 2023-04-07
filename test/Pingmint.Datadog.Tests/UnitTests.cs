@@ -13,28 +13,21 @@ public class UnitTests
     [Test]
     public void Test1()
     {
-        var serializer = Pingmint.Datadog.SeriesJsonSerializer.SeriesRequest;
+        var serializer = SeriesJsonSerializer.SeriesRequest;
 
-        var model = new Pingmint.Datadog.SeriesRequest
+        var model = new SeriesRequest
         {
-            Series = new List<Pingmint.Datadog.Series>
+            Series = new List<Series>
             {
-                new Pingmint.Datadog.Series
+                new Series
                 {
                     Metric = "test.metric",
                     Interval = 60,
                     Unit = "unit",
-                    Resources = new List<Pingmint.Datadog.Resource>
+                    Resources = ModelFactory.RequiredResources(),
+                    Points = new List<Point>
                     {
-                        new() { Type = "blah", Name = "name" }
-                    },
-                    Points = new List<Pingmint.Datadog.Point>
-                    {
-                        new Pingmint.Datadog.Point
-                        {
-                            Timestamp = 1234567890,
-                            Value = 123.456789m
-                        }
+                        ModelFactory.CurrentPoint(123.456789m),
                     },
                 }
             }
