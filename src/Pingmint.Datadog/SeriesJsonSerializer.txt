@@ -8,6 +8,7 @@ Series
 - unit => Unit : String
 - points => Points : [Point]
 - resources => Resources : [Resource]
+- tags => Tags : [String]
 
 Point
 - timestamp => Timestamp : Int64

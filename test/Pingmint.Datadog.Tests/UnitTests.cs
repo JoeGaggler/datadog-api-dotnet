@@ -29,6 +29,11 @@ public class UnitTests
                     {
                         ModelFactory.CurrentPoint(123.456789m),
                     },
+                    Tags = new List<String>
+                    {
+                        "tag1",
+                        "tag2",
+                    },
                 }
             }
         };

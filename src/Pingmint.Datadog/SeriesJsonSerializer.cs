@@ -100,6 +100,11 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 			writer.WritePropertyName("resources");
 			InternalSerializer2.Serialize(ref writer, localResources);
 		}
+		if (value.Tags is { } localTags)
+		{
+			writer.WritePropertyName("tags");
+			InternalSerializer3.Serialize(ref writer, localTags);
+		}
 		writer.WriteEndObject();
 	}
 
@@ -169,6 +174,16 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 							JsonTokenType.Null => null,
 							JsonTokenType.StartArray => InternalSerializer2.Deserialize(ref reader, obj.Resources ?? new()),
 							var unexpected => throw new InvalidOperationException($"unexpected token type for Resources: {unexpected} ")
+						};
+						break;
+					}
+					else if (reader.ValueTextEquals("tags"))
+					{
+						obj.Tags = Next(ref reader) switch
+						{
+							JsonTokenType.Null => null,
+							JsonTokenType.StartArray => InternalSerializer3.Deserialize(ref reader, obj.Tags ?? new()),
+							var unexpected => throw new InvalidOperationException($"unexpected token type for Tags: {unexpected} ")
 						};
 						break;
 					}
@@ -441,6 +456,49 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 			}
 		}
 	}
+	private static class InternalSerializer3
+	{
+		public static void Serialize<TArray>(ref Utf8JsonWriter writer, TArray array) where TArray : ICollection<String>
+		{
+			if (array is null) { writer.WriteNullValue(); return; }
+			writer.WriteStartArray();
+			foreach (var item in array)
+			{
+				writer.WriteStringValue(item);
+			}
+			writer.WriteEndArray();
+		}
+
+		public static TArray Deserialize<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<String>
+		{
+			while (true)
+			{
+				switch (Next(ref reader))
+				{
+					case JsonTokenType.Null:
+					{
+						reader.Skip();
+						break;
+					}
+					case JsonTokenType.String:
+					{
+						var item = reader.GetString();
+						array.Add(item);
+						break;
+					}
+					case JsonTokenType.EndArray:
+					{
+						return array;
+					}
+					default:
+					{
+						reader.Skip();
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 public sealed partial class SeriesRequest
 {
@@ -454,6 +512,7 @@ public sealed partial class Series
 	public String? Unit { get; set; }
 	public List<Point>? Points { get; set; }
 	public List<Resource>? Resources { get; set; }
+	public List<String>? Tags { get; set; }
 }
 public sealed partial class Point
 {
