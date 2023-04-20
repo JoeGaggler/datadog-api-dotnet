@@ -12,22 +12,27 @@ public static class Http
         request.Headers.Add("DD-API-KEY", key);
         request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-        // Compress the content using the deflate algorithm
-        using var memoryStream = new MemoryStream();
-        using (var compressStream = new GZipStream(memoryStream, CompressionLevel.Optimal, leaveOpen: true))
-        {
-            var json = SeriesJsonSerializer.ToJsonString(model);
-            var bytes = System.Text.Encoding.UTF8.GetBytes(json);
-            compressStream.Write(bytes);
-            compressStream.Flush();
-        }
-
         // Create compressed json content
-        var content = new ByteArrayContent(memoryStream.ToArray());
+        var json = SeriesJsonSerializer.ToJsonString(model);
+        var jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
+        var gzipBytes = GzipCompress(jsonBytes);
+        var content = new ByteArrayContent(gzipBytes);
         content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
         content.Headers.ContentEncoding.Add("gzip");
         request.Content = content;
 
         return request;
+    }
+
+    public static Byte[] GzipCompress(Byte[] bytes)
+    {
+        using var memoryStream = new MemoryStream();
+        using (var compressStream = new GZipStream(memoryStream, CompressionLevel.Optimal, leaveOpen: true))
+        {
+            compressStream.Write(bytes);
+            compressStream.Flush();
+        }
+
+        return memoryStream.ToArray();
     }
 }
