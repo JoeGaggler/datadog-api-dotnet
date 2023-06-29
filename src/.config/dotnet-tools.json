@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "pingmint.codegen.json": {
-      "version": "0.11.19",
+      "version": "0.12.21",
       "commands": [
         "jsoncodegen"
       ]

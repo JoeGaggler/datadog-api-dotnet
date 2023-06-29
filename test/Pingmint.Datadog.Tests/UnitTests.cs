@@ -13,8 +13,6 @@ public class UnitTests
     [Test]
     public void Test1()
     {
-        var serializer = SeriesJsonSerializer.SeriesRequest;
-
         var model = new SeriesRequest
         {
             Series = new List<Series>
@@ -24,7 +22,11 @@ public class UnitTests
                     Metric = "test.metric",
                     Interval = 60,
                     Unit = "unit",
-                    Resources = ModelFactory.RequiredResources(),
+                    Resources = new List<Resource>
+                    {
+                        new() { Type = "type1", Name = "name1" },
+                        new() { Type = "type2", Name = "name2" },
+                    },
                     Points = new List<Point>
                     {
                         ModelFactory.CurrentPoint(123.456789m),

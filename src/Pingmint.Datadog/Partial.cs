@@ -5,9 +5,7 @@ namespace Pingmint.Datadog;
 
 public partial class SeriesJsonSerializer
 {
-    public static String ToJsonString(SeriesRequest self) => ToJsonString(SeriesRequest, self);
-
-    private static String ToJsonString<TModel>(IJsonSerializer<TModel> serializer, TModel model)
+    public static String ToJsonString(SeriesRequest model)
     {
         String outJson;
         using (var mem = new MemoryStream())
@@ -15,7 +13,7 @@ public partial class SeriesJsonSerializer
             var writer = new Utf8JsonWriter(mem, new JsonWriterOptions() { Indented = true });
             try
             {
-                serializer.Serialize(ref writer, model);
+                Serialize(writer, model);
             }
             finally
             {

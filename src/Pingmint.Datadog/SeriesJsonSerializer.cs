@@ -5,35 +5,28 @@ using System.Text.Json;
 
 namespace Pingmint.Datadog;
 
-public partial interface IJsonSerializer<T>
+public static partial class SeriesJsonSerializer
 {
-	T Deserialize(ref Utf8JsonReader reader);
-	void Serialize(ref Utf8JsonWriter writer, T value);
-}
-public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest>, IJsonSerializer<Series>, IJsonSerializer<Point>, IJsonSerializer<Resource>
-{
-	public static readonly IJsonSerializer<SeriesRequest> SeriesRequest = new SeriesJsonSerializer();
-	public static readonly IJsonSerializer<Series> Series = new SeriesJsonSerializer();
-	public static readonly IJsonSerializer<Point> Point = new SeriesJsonSerializer();
-	public static readonly IJsonSerializer<Resource> Resource = new SeriesJsonSerializer();
-
 	private static JsonTokenType Next(ref Utf8JsonReader reader) => reader.Read() ? reader.TokenType : throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
 
-	void IJsonSerializer<SeriesRequest>.Serialize(ref Utf8JsonWriter writer, SeriesRequest value)
+	private delegate void DeserializerDelegate<T>(ref Utf8JsonReader r, out T value);
+	private static T GetOutParam<T>(ref Utf8JsonReader reader, DeserializerDelegate<T> func) { func(ref reader, out T value); return value; }
+
+	public static void Serialize(Utf8JsonWriter writer, SeriesRequest value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
 		if (value.Series is { } localSeries)
 		{
 			writer.WritePropertyName("series");
-			InternalSerializer0.Serialize(ref writer, localSeries);
+			Serialize0(writer, localSeries);
 		}
 		writer.WriteEndObject();
 	}
 
-	SeriesRequest IJsonSerializer<SeriesRequest>.Deserialize(ref Utf8JsonReader reader)
+	public static void Deserialize(ref Utf8JsonReader reader, out SeriesRequest obj)
 	{
-		var obj = new SeriesRequest();
+		obj = new SeriesRequest();
 		while (true)
 		{
 			switch (Next(ref reader))
@@ -45,7 +38,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 						obj.Series = Next(ref reader) switch
 						{
 							JsonTokenType.Null => null,
-							JsonTokenType.StartArray => InternalSerializer0.Deserialize(ref reader, obj.Series ?? new()),
+							JsonTokenType.StartArray => Deserialize0(ref reader, obj.Series ?? new()),
 							var unexpected => throw new InvalidOperationException($"unexpected token type for Series: {unexpected} ")
 						};
 						break;
@@ -56,7 +49,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 				}
 				case JsonTokenType.EndObject:
 				{
-					return obj;
+					return;
 				}
 				default:
 				{
@@ -66,7 +59,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 			}
 		}
 	}
-	void IJsonSerializer<Series>.Serialize(ref Utf8JsonWriter writer, Series value)
+	public static void Serialize(Utf8JsonWriter writer, Series value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
@@ -93,24 +86,24 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 		if (value.Points is { } localPoints)
 		{
 			writer.WritePropertyName("points");
-			InternalSerializer1.Serialize(ref writer, localPoints);
+			Serialize1(writer, localPoints);
 		}
 		if (value.Resources is { } localResources)
 		{
 			writer.WritePropertyName("resources");
-			InternalSerializer2.Serialize(ref writer, localResources);
+			Serialize2(writer, localResources);
 		}
 		if (value.Tags is { } localTags)
 		{
 			writer.WritePropertyName("tags");
-			InternalSerializer3.Serialize(ref writer, localTags);
+			Serialize3(writer, localTags);
 		}
 		writer.WriteEndObject();
 	}
 
-	Series IJsonSerializer<Series>.Deserialize(ref Utf8JsonReader reader)
+	public static void Deserialize(ref Utf8JsonReader reader, out Series obj)
 	{
-		var obj = new Series();
+		obj = new Series();
 		while (true)
 		{
 			switch (Next(ref reader))
@@ -162,7 +155,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 						obj.Points = Next(ref reader) switch
 						{
 							JsonTokenType.Null => null,
-							JsonTokenType.StartArray => InternalSerializer1.Deserialize(ref reader, obj.Points ?? new()),
+							JsonTokenType.StartArray => Deserialize1(ref reader, obj.Points ?? new()),
 							var unexpected => throw new InvalidOperationException($"unexpected token type for Points: {unexpected} ")
 						};
 						break;
@@ -172,7 +165,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 						obj.Resources = Next(ref reader) switch
 						{
 							JsonTokenType.Null => null,
-							JsonTokenType.StartArray => InternalSerializer2.Deserialize(ref reader, obj.Resources ?? new()),
+							JsonTokenType.StartArray => Deserialize2(ref reader, obj.Resources ?? new()),
 							var unexpected => throw new InvalidOperationException($"unexpected token type for Resources: {unexpected} ")
 						};
 						break;
@@ -182,7 +175,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 						obj.Tags = Next(ref reader) switch
 						{
 							JsonTokenType.Null => null,
-							JsonTokenType.StartArray => InternalSerializer3.Deserialize(ref reader, obj.Tags ?? new()),
+							JsonTokenType.StartArray => Deserialize3(ref reader, obj.Tags ?? new()),
 							var unexpected => throw new InvalidOperationException($"unexpected token type for Tags: {unexpected} ")
 						};
 						break;
@@ -193,7 +186,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 				}
 				case JsonTokenType.EndObject:
 				{
-					return obj;
+					return;
 				}
 				default:
 				{
@@ -203,7 +196,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 			}
 		}
 	}
-	void IJsonSerializer<Point>.Serialize(ref Utf8JsonWriter writer, Point value)
+	public static void Serialize(Utf8JsonWriter writer, Point value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
@@ -220,9 +213,9 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 		writer.WriteEndObject();
 	}
 
-	Point IJsonSerializer<Point>.Deserialize(ref Utf8JsonReader reader)
+	public static void Deserialize(ref Utf8JsonReader reader, out Point obj)
 	{
-		var obj = new Point();
+		obj = new Point();
 		while (true)
 		{
 			switch (Next(ref reader))
@@ -255,7 +248,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 				}
 				case JsonTokenType.EndObject:
 				{
-					return obj;
+					return;
 				}
 				default:
 				{
@@ -265,7 +258,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 			}
 		}
 	}
-	void IJsonSerializer<Resource>.Serialize(ref Utf8JsonWriter writer, Resource value)
+	public static void Serialize(Utf8JsonWriter writer, Resource value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
@@ -282,9 +275,9 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 		writer.WriteEndObject();
 	}
 
-	Resource IJsonSerializer<Resource>.Deserialize(ref Utf8JsonReader reader)
+	public static void Deserialize(ref Utf8JsonReader reader, out Resource obj)
 	{
-		var obj = new Resource();
+		obj = new Resource();
 		while (true)
 		{
 			switch (Next(ref reader))
@@ -317,7 +310,7 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 				}
 				case JsonTokenType.EndObject:
 				{
-					return obj;
+					return;
 				}
 				default:
 				{
@@ -327,174 +320,165 @@ public sealed partial class SeriesJsonSerializer : IJsonSerializer<SeriesRequest
 			}
 		}
 	}
-	private static class InternalSerializer0
+	private static void Serialize0<TArray>(Utf8JsonWriter writer, TArray array) where TArray : ICollection<Series>
 	{
-		public static void Serialize<TArray>(ref Utf8JsonWriter writer, TArray array) where TArray : ICollection<Series>
+		if (array is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartArray();
+		foreach (var item in array)
 		{
-			if (array is null) { writer.WriteNullValue(); return; }
-			writer.WriteStartArray();
-			foreach (var item in array)
-			{
-				Series.Serialize(ref writer, item);
-			}
-			writer.WriteEndArray();
+			Serialize(writer, item);
 		}
+		writer.WriteEndArray();
+	}
 
-		public static TArray Deserialize<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<Series>
+	private static TArray Deserialize0<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<Series>
+	{
+		while (true)
 		{
-			while (true)
+			switch (Next(ref reader))
 			{
-				switch (Next(ref reader))
+				case JsonTokenType.Null:
 				{
-					case JsonTokenType.Null:
-					{
-						reader.Skip();
-						break;
-					}
-					case JsonTokenType.StartObject:
-					{
-						var item = Series.Deserialize(ref reader);
-						array.Add(item);
-						break;
-					}
-					case JsonTokenType.EndArray:
-					{
-						return array;
-					}
-					default:
-					{
-						reader.Skip();
-						break;
-					}
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.StartObject:
+				{
+					Deserialize(ref reader, out Series value);
+					var item = value;
+					array.Add(item);
+					break;
+				}
+				case JsonTokenType.EndArray:
+				{
+					return array;
+				}
+				default:
+				{
+					reader.Skip();
+					break;
 				}
 			}
 		}
 	}
-	private static class InternalSerializer1
+	private static void Serialize1<TArray>(Utf8JsonWriter writer, TArray array) where TArray : ICollection<Point>
 	{
-		public static void Serialize<TArray>(ref Utf8JsonWriter writer, TArray array) where TArray : ICollection<Point>
+		if (array is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartArray();
+		foreach (var item in array)
 		{
-			if (array is null) { writer.WriteNullValue(); return; }
-			writer.WriteStartArray();
-			foreach (var item in array)
-			{
-				Point.Serialize(ref writer, item);
-			}
-			writer.WriteEndArray();
+			Serialize(writer, item);
 		}
+		writer.WriteEndArray();
+	}
 
-		public static TArray Deserialize<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<Point>
+	private static TArray Deserialize1<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<Point>
+	{
+		while (true)
 		{
-			while (true)
+			switch (Next(ref reader))
 			{
-				switch (Next(ref reader))
+				case JsonTokenType.Null:
 				{
-					case JsonTokenType.Null:
-					{
-						reader.Skip();
-						break;
-					}
-					case JsonTokenType.StartObject:
-					{
-						var item = Point.Deserialize(ref reader);
-						array.Add(item);
-						break;
-					}
-					case JsonTokenType.EndArray:
-					{
-						return array;
-					}
-					default:
-					{
-						reader.Skip();
-						break;
-					}
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.StartObject:
+				{
+					Deserialize(ref reader, out Point value);
+					var item = value;
+					array.Add(item);
+					break;
+				}
+				case JsonTokenType.EndArray:
+				{
+					return array;
+				}
+				default:
+				{
+					reader.Skip();
+					break;
 				}
 			}
 		}
 	}
-	private static class InternalSerializer2
+	private static void Serialize2<TArray>(Utf8JsonWriter writer, TArray array) where TArray : ICollection<Resource>
 	{
-		public static void Serialize<TArray>(ref Utf8JsonWriter writer, TArray array) where TArray : ICollection<Resource>
+		if (array is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartArray();
+		foreach (var item in array)
 		{
-			if (array is null) { writer.WriteNullValue(); return; }
-			writer.WriteStartArray();
-			foreach (var item in array)
-			{
-				Resource.Serialize(ref writer, item);
-			}
-			writer.WriteEndArray();
+			Serialize(writer, item);
 		}
+		writer.WriteEndArray();
+	}
 
-		public static TArray Deserialize<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<Resource>
+	private static TArray Deserialize2<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<Resource>
+	{
+		while (true)
 		{
-			while (true)
+			switch (Next(ref reader))
 			{
-				switch (Next(ref reader))
+				case JsonTokenType.Null:
 				{
-					case JsonTokenType.Null:
-					{
-						reader.Skip();
-						break;
-					}
-					case JsonTokenType.StartObject:
-					{
-						var item = Resource.Deserialize(ref reader);
-						array.Add(item);
-						break;
-					}
-					case JsonTokenType.EndArray:
-					{
-						return array;
-					}
-					default:
-					{
-						reader.Skip();
-						break;
-					}
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.StartObject:
+				{
+					Deserialize(ref reader, out Resource value);
+					var item = value;
+					array.Add(item);
+					break;
+				}
+				case JsonTokenType.EndArray:
+				{
+					return array;
+				}
+				default:
+				{
+					reader.Skip();
+					break;
 				}
 			}
 		}
 	}
-	private static class InternalSerializer3
+	private static void Serialize3<TArray>(Utf8JsonWriter writer, TArray array) where TArray : ICollection<String>
 	{
-		public static void Serialize<TArray>(ref Utf8JsonWriter writer, TArray array) where TArray : ICollection<String>
+		if (array is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartArray();
+		foreach (var item in array)
 		{
-			if (array is null) { writer.WriteNullValue(); return; }
-			writer.WriteStartArray();
-			foreach (var item in array)
-			{
-				writer.WriteStringValue(item);
-			}
-			writer.WriteEndArray();
+			writer.WriteStringValue(item);
 		}
+		writer.WriteEndArray();
+	}
 
-		public static TArray Deserialize<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<String>
+	private static TArray Deserialize3<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<String>
+	{
+		while (true)
 		{
-			while (true)
+			switch (Next(ref reader))
 			{
-				switch (Next(ref reader))
+				case JsonTokenType.Null:
 				{
-					case JsonTokenType.Null:
-					{
-						reader.Skip();
-						break;
-					}
-					case JsonTokenType.String:
-					{
-						var item = reader.GetString();
-						array.Add(item);
-						break;
-					}
-					case JsonTokenType.EndArray:
-					{
-						return array;
-					}
-					default:
-					{
-						reader.Skip();
-						break;
-					}
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.String:
+				{
+					var item = reader.GetString();
+					array.Add(item);
+					break;
+				}
+				case JsonTokenType.EndArray:
+				{
+					return array;
+				}
+				default:
+				{
+					reader.Skip();
+					break;
 				}
 			}
 		}
