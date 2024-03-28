@@ -33,7 +33,7 @@ jobs:
           COUNTER: ${{ github.run_number }}
         if: github.ref != 'refs/heads/main'
       - name: Restore dependencies
-        run: dotnet restore src/Pingmint.Datadog --locked-mode --configfile ./NuGet.config
+        run: dotnet restore src/Pingmint.Datadog --configfile ./NuGet.config
       - name: Build
         run: dotnet build --configuration Release --no-restore src/Pingmint.Datadog
       - name: Pack
