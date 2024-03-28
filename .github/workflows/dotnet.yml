@@ -11,11 +11,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
+          cache: true
+          global-json-file: global.json
       - name: Version (release)
         run: |
           OLD=$(yq ".Project.PropertyGroup[0].Version" -p xml -o xml src/Pingmint.Datadog/Pingmint.Datadog.csproj)
@@ -33,7 +35,7 @@ jobs:
           COUNTER: ${{ github.run_number }}
         if: github.ref != 'refs/heads/main'
       - name: Restore dependencies
-        run: dotnet restore src/Pingmint.Datadog --configfile ./NuGet.config
+        run: dotnet restore src/Pingmint.Datadog --locked-mode --configfile ./NuGet.config
       - name: Build
         run: dotnet build --configuration Release --no-restore src/Pingmint.Datadog
       - name: Pack
