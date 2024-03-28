@@ -67,6 +67,11 @@
           "System.Threading": "4.0.11"
         }
       },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Transitive",
+        "resolved": "8.0.3",
+        "contentHash": "0kwNg0LBIvVTx9A2mo9Mnw4wLGtaeQgjSz5P13bOOwdWPPLe9HzI+XTkwiMhS7iQCM6X4LAbFR76xScaMw0MrA=="
+      },
       "Microsoft.NETCore.Platforms": {
         "type": "Transitive",
         "resolved": "1.1.0",
@@ -530,7 +535,10 @@
         }
       },
       "pingmint.datadog": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.NET.ILLink.Tasks": "[8.0.3, )"
+        }
       }
     }
   }

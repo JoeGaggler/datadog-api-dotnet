@@ -28,4 +28,8 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" />
+  </ItemGroup>
+
 </Project>

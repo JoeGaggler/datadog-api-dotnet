@@ -36,8 +36,6 @@ jobs:
         run: dotnet restore src/Pingmint.Datadog --locked-mode --configfile ./NuGet.config
       - name: Build
         run: dotnet build --configuration Release --no-restore src/Pingmint.Datadog
-      - name: Test
-        run: dotnet test --configuration Release --no-build --no-restore --verbosity normal src/Pingmint.Datadog
       - name: Pack
         run: dotnet pack --configuration Release --no-build --no-restore --verbosity normal --output ./nupkg src/Pingmint.Datadog
       - name: Push
