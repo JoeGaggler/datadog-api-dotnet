@@ -1,4 +1,6 @@
 using System.IO.Compression;
+using System.Net;
+using System.Text.Json;
 
 namespace Pingmint.Datadog;
 
@@ -13,13 +15,7 @@ public static class Http
         request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
         // Create compressed json content
-        var json = SeriesJsonSerializer.ToJsonString(model);
-        var jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
-        var gzipBytes = GzipCompress(jsonBytes);
-        var content = new ByteArrayContent(gzipBytes);
-        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-        content.Headers.ContentEncoding.Add("gzip");
-        request.Content = content;
+        request.Content = new SeriesRequestHttpContent(model);
 
         return request;
     }
@@ -34,5 +30,36 @@ public static class Http
         }
 
         return memoryStream.ToArray();
+    }
+}
+
+public class SeriesRequestHttpContent : HttpContent
+{
+    private readonly SeriesRequest model;
+
+    public SeriesRequestHttpContent(SeriesRequest model)
+    {
+        this.model = model;
+        Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+        Headers.ContentEncoding.Add("gzip");
+    }
+
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+    {
+        using (var compressStream = new GZipStream(stream, CompressionLevel.Optimal, leaveOpen: true))
+        {
+            using (var writer = new Utf8JsonWriter(compressStream, new JsonWriterOptions() { Indented = true, MaxDepth = 16 }))
+            {
+                SeriesJsonSerializer.Serialize(writer, model);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    protected override bool TryComputeLength(out long length)
+    {
+        length = 0;
+        return false;
     }
 }
