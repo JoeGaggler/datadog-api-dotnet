@@ -16,8 +16,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
-          cache: true
-          cache-dependency-path: src/Pingmint.Datadog/packages.lock.json
           global-json-file: global.json
       - name: Version (release)
         run: |
