@@ -15,8 +15,10 @@ public partial class JsonSerializer :
     JsonSerializer.ISerializes<IncidentResponse>,
     JsonSerializer.ISerializes<IncidentResponseData>,
     JsonSerializer.ISerializes<IncidentResponseDataAttributes>,
+    JsonSerializer.ISerializes<IncidentResponseDataAttributesFields>,
     JsonSerializer.ISerializes<DatadogIncidentsSearchResponse>,
-    JsonSerializer.ISerializes<DatadogIncidentsSearchResponseData>
+    JsonSerializer.ISerializes<DatadogIncidentsSearchResponseData>,
+    JsonSerializer.ISerializes<TextBoxValue>
 {
 	public interface ISerializes<T> where T : notnull
 	{
@@ -462,6 +464,11 @@ public partial class JsonSerializer :
 			writer.WritePropertyName("detected");
 			writer.WriteStringValue(localDetected);
 		}
+		if (value.Fields is { } localFields)
+		{
+			writer.WritePropertyName("fields");
+			Serialize(writer, localFields);
+		}
 		if (value.Modified is { } localModified)
 		{
 			writer.WritePropertyName("modified");
@@ -518,6 +525,13 @@ public partial class JsonSerializer :
 						if (reader.TokenType == JsonTokenType.String) { obj.Detected = reader.GetString(); break; }
 						throw new InvalidOperationException($"unexpected token type for Detected: {reader.TokenType} ");
 					}
+					else if (reader.ValueTextEquals("fields"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Fields = null; break; }
+						if (reader.TokenType == JsonTokenType.StartObject) { obj.Fields = new(); Deserialize(ref reader, obj.Fields); break; }
+						throw new InvalidOperationException($"unexpected token type for Fields: {reader.TokenType} ");
+					}
 					else if (reader.ValueTextEquals("modified"))
 					{
 						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
@@ -559,6 +573,44 @@ public partial class JsonSerializer :
 						if (reader.TokenType == JsonTokenType.Null) { obj.Title = null; break; }
 						if (reader.TokenType == JsonTokenType.String) { obj.Title = reader.GetString(); break; }
 						throw new InvalidOperationException($"unexpected token type for Title: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
+	public static void Serialize(Utf8JsonWriter writer, IncidentResponseDataAttributesFields? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Summary is { } localSummary)
+		{
+			writer.WritePropertyName("summary");
+			Serialize(writer, localSummary);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentResponseDataAttributesFields obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("summary"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Summary = null; break; }
+						if (reader.TokenType == JsonTokenType.StartObject) { obj.Summary = new(); Deserialize(ref reader, obj.Summary); break; }
+						throw new InvalidOperationException($"unexpected token type for Summary: {reader.TokenType} ");
 					}
 
 					reader.Skip();
@@ -622,6 +674,44 @@ public partial class JsonSerializer :
 			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
 			switch (reader.TokenType)
 			{
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
+	public static void Serialize(Utf8JsonWriter writer, TextBoxValue? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Value is { } localValue)
+		{
+			writer.WritePropertyName("value");
+			writer.WriteStringValue(localValue);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, TextBoxValue obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("value"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Value = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Value = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Value: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
 				case JsonTokenType.EndObject: { return; }
 				default: { reader.Skip(); break; }
 			}
@@ -828,6 +918,7 @@ public sealed partial class IncidentResponseDataAttributes
 {
 	public String? Created { get; set; }
 	public String? Detected { get; set; }
+	public IncidentResponseDataAttributesFields? Fields { get; set; }
 	public String? Modified { get; set; }
 	public Int32? PublicId { get; set; }
 	public String? Resolved { get; set; }
@@ -835,10 +926,18 @@ public sealed partial class IncidentResponseDataAttributes
 	public String? State { get; set; }
 	public String? Title { get; set; }
 }
+public sealed partial class IncidentResponseDataAttributesFields
+{
+	public TextBoxValue? Summary { get; set; }
+}
 public sealed partial class DatadogIncidentsSearchResponse
 {
 	public DatadogIncidentsSearchResponseData? Data { get; set; }
 }
 public sealed partial class DatadogIncidentsSearchResponseData
 {
+}
+public sealed partial class TextBoxValue
+{
+	public String? Value { get; set; }
 }

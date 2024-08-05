@@ -43,6 +43,7 @@ IncidentResponseData
 IncidentResponseDataAttributes
 - "created" => Created : String
 - "detected" => Detected : String
+- "fields" => Fields : IncidentResponseDataAttributesFields
 - "modified" => Modified : String
 - "public_id" => PublicId : Int32
 - "resolved" => Resolved : String
@@ -50,9 +51,15 @@ IncidentResponseDataAttributes
 - "state" => State : String
 - "title" => Title : String
 
+IncidentResponseDataAttributesFields
+- "summary" => Summary : TextBoxValue
+
 DatadogIncidentsSearchResponse
 - "data" => Data : DatadogIncidentsSearchResponseData
 // - "included" => Included : [DatadogIncidentsSearchResponseIncluded]
 // - "meta" => Meta : DatadogIncidentsSearchResponseMeta
 
 DatadogIncidentsSearchResponseData
+
+TextBoxValue
+- "value" => Value : String
