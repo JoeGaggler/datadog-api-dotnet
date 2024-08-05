@@ -34,7 +34,18 @@ IncidentsResponseData
 - "attributes" => Attributes : IncidentsResponseDataAttributes
 
 IncidentsResponseDataAttributes
+- "created" => Created : String
+- "detected" => Detected : String
+- "modified" => Modified : String
 - "public_id" => PublicId : Int32
-- "title" => Title : String
+- "resolved" => Resolved : String
 - "severity" => Severity : String
 - "state" => State : String
+- "title" => Title : String
+
+DatadogIncidentsSearchResponse
+- "data" => Data : DatadogIncidentsSearchResponseData
+// - "included" => Included : [DatadogIncidentsSearchResponseIncluded]
+// - "meta" => Meta : DatadogIncidentsSearchResponseMeta
+
+DatadogIncidentsSearchResponseData
