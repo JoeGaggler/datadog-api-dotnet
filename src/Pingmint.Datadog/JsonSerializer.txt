@@ -31,9 +31,16 @@ IncidentsResponse
 
 IncidentsResponseData
 - "id" => Id : String
-- "attributes" => Attributes : IncidentsResponseDataAttributes
+- "attributes" => Attributes : IncidentResponseDataAttributes
 
-IncidentsResponseDataAttributes
+IncidentResponse
+- "id" => Id : String
+- "data" => Data : IncidentResponseData
+
+IncidentResponseData
+- "attributes" => Attributes : IncidentResponseDataAttributes
+
+IncidentResponseDataAttributes
 - "created" => Created : String
 - "detected" => Detected : String
 - "modified" => Modified : String

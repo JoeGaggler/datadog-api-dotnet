@@ -12,7 +12,9 @@ public partial class JsonSerializer :
     JsonSerializer.ISerializes<Resource>,
     JsonSerializer.ISerializes<IncidentsResponse>,
     JsonSerializer.ISerializes<IncidentsResponseData>,
-    JsonSerializer.ISerializes<IncidentsResponseDataAttributes>,
+    JsonSerializer.ISerializes<IncidentResponse>,
+    JsonSerializer.ISerializes<IncidentResponseData>,
+    JsonSerializer.ISerializes<IncidentResponseDataAttributes>,
     JsonSerializer.ISerializes<DatadogIncidentsSearchResponse>,
     JsonSerializer.ISerializes<DatadogIncidentsSearchResponseData>
 {
@@ -358,7 +360,95 @@ public partial class JsonSerializer :
 			}
 		}
 	}
-	public static void Serialize(Utf8JsonWriter writer, IncidentsResponseDataAttributes? value)
+	public static void Serialize(Utf8JsonWriter writer, IncidentResponse? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Id is { } localId)
+		{
+			writer.WritePropertyName("id");
+			writer.WriteStringValue(localId);
+		}
+		if (value.Data is { } localData)
+		{
+			writer.WritePropertyName("data");
+			Serialize(writer, localData);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentResponse obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("id"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Id = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Id = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Id: {reader.TokenType} ");
+					}
+					else if (reader.ValueTextEquals("data"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Data = null; break; }
+						if (reader.TokenType == JsonTokenType.StartObject) { obj.Data = new(); Deserialize(ref reader, obj.Data); break; }
+						throw new InvalidOperationException($"unexpected token type for Data: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
+	public static void Serialize(Utf8JsonWriter writer, IncidentResponseData? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Attributes is { } localAttributes)
+		{
+			writer.WritePropertyName("attributes");
+			Serialize(writer, localAttributes);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentResponseData obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("attributes"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Attributes = null; break; }
+						if (reader.TokenType == JsonTokenType.StartObject) { obj.Attributes = new(); Deserialize(ref reader, obj.Attributes); break; }
+						throw new InvalidOperationException($"unexpected token type for Attributes: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
+	public static void Serialize(Utf8JsonWriter writer, IncidentResponseDataAttributes? value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
@@ -405,7 +495,7 @@ public partial class JsonSerializer :
 		writer.WriteEndObject();
 	}
 
-	public static void Deserialize(ref Utf8JsonReader reader, IncidentsResponseDataAttributes obj)
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentResponseDataAttributes obj)
 	{
 		while (true)
 		{
@@ -723,9 +813,18 @@ public sealed partial class IncidentsResponse
 public sealed partial class IncidentsResponseData
 {
 	public String? Id { get; set; }
-	public IncidentsResponseDataAttributes? Attributes { get; set; }
+	public IncidentResponseDataAttributes? Attributes { get; set; }
 }
-public sealed partial class IncidentsResponseDataAttributes
+public sealed partial class IncidentResponse
+{
+	public String? Id { get; set; }
+	public IncidentResponseData? Data { get; set; }
+}
+public sealed partial class IncidentResponseData
+{
+	public IncidentResponseDataAttributes? Attributes { get; set; }
+}
+public sealed partial class IncidentResponseDataAttributes
 {
 	public String? Created { get; set; }
 	public String? Detected { get; set; }
