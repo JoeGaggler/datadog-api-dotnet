@@ -6,7 +6,7 @@ namespace Pingmint.Datadog;
 
 public static class Http
 {
-    public static HttpRequestMessage CreateHttpRequest(SeriesRequest model, String key, String endpoint = Endpoints.Series)
+    public static HttpRequestMessage CreateSeriesHttpRequest(SeriesRequest model, String key, String endpoint = Endpoints.Series)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
 
@@ -16,6 +16,18 @@ public static class Http
 
         // Create compressed json content
         request.Content = new SeriesRequestHttpContent(model);
+
+        return request;
+    }
+
+    public static HttpRequestMessage CreateAppGetHttpRequest(String apiKey, String applicationKey, String endpoint)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+
+        // Headers
+        request.Headers.Add("DD-API-KEY", apiKey);
+        request.Headers.Add("DD-APPLICATION-KEY", applicationKey);
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
         return request;
     }
@@ -48,9 +60,9 @@ public class SeriesRequestHttpContent : HttpContent
     {
         using (var compressStream = new GZipStream(stream, CompressionLevel.Optimal, leaveOpen: true))
         {
-            using (var writer = new Utf8JsonWriter(compressStream, new JsonWriterOptions() { Indented = true, MaxDepth = 16 }))
+            using (var writer = new Utf8JsonWriter(compressStream, new JsonWriterOptions() { Indented = true, MaxDepth = 8 }))
             {
-                SeriesJsonSerializer.Serialize(writer, model);
+                JsonSerializer.Serialize(writer, model);
             }
         }
 

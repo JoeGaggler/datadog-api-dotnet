@@ -1,9 +1,10 @@
 <Project>
-    <PropertyGroup>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-        <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageVersion Include="Microsoft.NET.ILLink.Tasks" Version="8.0.3" />
-    </ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.ILLink.Tasks" Version="8.0.3" />
+    <PackageVersion Include="Pingmint" Version="0.1.23" />
+  </ItemGroup>
 </Project>

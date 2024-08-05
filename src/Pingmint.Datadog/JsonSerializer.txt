@@ -1,0 +1,40 @@
+////////////////////////////////
+// Metrics
+////////////////////////////////
+
+SeriesRequest
+- series => Series : [Series]
+
+Series
+- metric => Metric : String
+- type => Type : Int32
+- interval => Interval : Int64
+- unit => Unit : String
+- points => Points : [Point]
+- resources => Resources : [Resource]
+- tags => Tags : [String]
+
+Point
+- timestamp => Timestamp : Int64
+- value => Value : Decimal
+
+Resource
+- type => Type : String
+- name => Name : String
+
+////////////////////////////////
+// Incidents
+////////////////////////////////
+
+IncidentsResponse
+- "data" => Data : [IncidentsResponseData]
+
+IncidentsResponseData
+- "id" => Id : String
+- "attributes" => Attributes : IncidentsResponseDataAttributes
+
+IncidentsResponseDataAttributes
+- "public_id" => PublicId : Int32
+- "title" => Title : String
+- "severity" => Severity : String
+- "state" => State : String

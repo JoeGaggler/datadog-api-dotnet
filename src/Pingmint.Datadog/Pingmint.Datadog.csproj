@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.8</Version>
+    <Version>0.9</Version>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -27,5 +27,9 @@
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pingmint" />
+  </ItemGroup>
 
 </Project>

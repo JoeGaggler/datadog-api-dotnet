@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Pingmint.Datadog;
 
-public partial class SeriesJsonSerializer
+public partial class JsonSerializer
 {
     public static String ToJsonString(SeriesRequest model)
     {
