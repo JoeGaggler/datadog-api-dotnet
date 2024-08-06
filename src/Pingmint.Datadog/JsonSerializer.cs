@@ -16,8 +16,8 @@ public partial class JsonSerializer :
     JsonSerializer.ISerializes<IncidentResponseData>,
     JsonSerializer.ISerializes<IncidentResponseDataAttributes>,
     JsonSerializer.ISerializes<IncidentResponseDataAttributesFields>,
-    JsonSerializer.ISerializes<DatadogIncidentsSearchResponse>,
-    JsonSerializer.ISerializes<DatadogIncidentsSearchResponseData>,
+    JsonSerializer.ISerializes<IncidentsSearchResponse>,
+    JsonSerializer.ISerializes<IncidentsSearchResponseIncluded>,
     JsonSerializer.ISerializes<TextBoxValue>
 {
 	public interface ISerializes<T> where T : notnull
@@ -622,19 +622,19 @@ public partial class JsonSerializer :
 			}
 		}
 	}
-	public static void Serialize(Utf8JsonWriter writer, DatadogIncidentsSearchResponse? value)
+	public static void Serialize(Utf8JsonWriter writer, IncidentsSearchResponse? value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
-		if (value.Data is { } localData)
+		if (value.Included is { } localIncluded)
 		{
-			writer.WritePropertyName("data");
-			Serialize(writer, localData);
+			writer.WritePropertyName("included");
+			Serialize5(writer, localIncluded);
 		}
 		writer.WriteEndObject();
 	}
 
-	public static void Deserialize(ref Utf8JsonReader reader, DatadogIncidentsSearchResponse obj)
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentsSearchResponse obj)
 	{
 		while (true)
 		{
@@ -643,12 +643,12 @@ public partial class JsonSerializer :
 			{
 				case JsonTokenType.PropertyName:
 				{
-					if (reader.ValueTextEquals("data"))
+					if (reader.ValueTextEquals("included"))
 					{
 						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
-						if (reader.TokenType == JsonTokenType.Null) { obj.Data = null; break; }
-						if (reader.TokenType == JsonTokenType.StartObject) { obj.Data = new(); Deserialize(ref reader, obj.Data); break; }
-						throw new InvalidOperationException($"unexpected token type for Data: {reader.TokenType} ");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Included = null; break; }
+						if (reader.TokenType == JsonTokenType.StartArray) { obj.Included = Deserialize5(ref reader, obj.Included ?? new()); break; }
+						throw new InvalidOperationException($"unexpected token type for Included: {reader.TokenType} ");
 					}
 
 					reader.Skip();
@@ -660,20 +660,39 @@ public partial class JsonSerializer :
 			}
 		}
 	}
-	public static void Serialize(Utf8JsonWriter writer, DatadogIncidentsSearchResponseData? value)
+	public static void Serialize(Utf8JsonWriter writer, IncidentsSearchResponseIncluded? value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
+		if (value.Attributes is { } localAttributes)
+		{
+			writer.WritePropertyName("attributes");
+			Serialize(writer, localAttributes);
+		}
 		writer.WriteEndObject();
 	}
 
-	public static void Deserialize(ref Utf8JsonReader reader, DatadogIncidentsSearchResponseData obj)
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentsSearchResponseIncluded obj)
 	{
 		while (true)
 		{
 			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
 			switch (reader.TokenType)
 			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("attributes"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Attributes = null; break; }
+						if (reader.TokenType == JsonTokenType.StartObject) { obj.Attributes = new(); Deserialize(ref reader, obj.Attributes); break; }
+						throw new InvalidOperationException($"unexpected token type for Attributes: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
 				case JsonTokenType.EndObject: { return; }
 				default: { reader.Skip(); break; }
 			}
@@ -871,6 +890,37 @@ public partial class JsonSerializer :
 			}
 		}
 	}
+	private static void Serialize5<TArray>(Utf8JsonWriter writer, TArray array) where TArray : ICollection<IncidentsSearchResponseIncluded>
+	{
+		if (array is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartArray();
+		foreach (var item in array)
+		{
+			Serialize(writer, item);
+		}
+		writer.WriteEndArray();
+	}
+
+	private static TArray Deserialize5<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<IncidentsSearchResponseIncluded>
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.Null: { reader.Skip(); break; }
+				case JsonTokenType.StartObject:
+				{
+					IncidentsSearchResponseIncluded item = new();
+					Deserialize(ref reader, item);
+					array.Add(item);
+					break;
+				}
+				case JsonTokenType.EndArray: { return array; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
 }
 public sealed partial class SeriesRequest
 {
@@ -930,12 +980,13 @@ public sealed partial class IncidentResponseDataAttributesFields
 {
 	public TextBoxValue? Summary { get; set; }
 }
-public sealed partial class DatadogIncidentsSearchResponse
+public sealed partial class IncidentsSearchResponse
 {
-	public DatadogIncidentsSearchResponseData? Data { get; set; }
+	public List<IncidentsSearchResponseIncluded>? Included { get; set; }
 }
-public sealed partial class DatadogIncidentsSearchResponseData
+public sealed partial class IncidentsSearchResponseIncluded
 {
+	public IncidentResponseDataAttributes? Attributes { get; set; }
 }
 public sealed partial class TextBoxValue
 {

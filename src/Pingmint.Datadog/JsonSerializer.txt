@@ -54,12 +54,13 @@ IncidentResponseDataAttributes
 IncidentResponseDataAttributesFields
 - "summary" => Summary : TextBoxValue
 
-DatadogIncidentsSearchResponse
-- "data" => Data : DatadogIncidentsSearchResponseData
-// - "included" => Included : [DatadogIncidentsSearchResponseIncluded]
+IncidentsSearchResponse
+//- "data" => Data : DatadogIncidentsSearchResponseData
+- "included" => Included : [IncidentsSearchResponseIncluded]
 // - "meta" => Meta : DatadogIncidentsSearchResponseMeta
 
-DatadogIncidentsSearchResponseData
+IncidentsSearchResponseIncluded
+- "attributes" => Attributes : IncidentResponseDataAttributes
 
 TextBoxValue
 - "value" => Value : String
