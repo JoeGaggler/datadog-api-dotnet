@@ -60,6 +60,7 @@ IncidentsSearchResponse
 // - "meta" => Meta : DatadogIncidentsSearchResponseMeta
 
 IncidentsSearchResponseIncluded
+- "id" => Id : String
 - "attributes" => Attributes : IncidentResponseDataAttributes
 
 TextBoxValue

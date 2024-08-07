@@ -664,6 +664,11 @@ public partial class JsonSerializer :
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
 		writer.WriteStartObject();
+		if (value.Id is { } localId)
+		{
+			writer.WritePropertyName("id");
+			writer.WriteStringValue(localId);
+		}
 		if (value.Attributes is { } localAttributes)
 		{
 			writer.WritePropertyName("attributes");
@@ -681,7 +686,14 @@ public partial class JsonSerializer :
 			{
 				case JsonTokenType.PropertyName:
 				{
-					if (reader.ValueTextEquals("attributes"))
+					if (reader.ValueTextEquals("id"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Id = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Id = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Id: {reader.TokenType} ");
+					}
+					else if (reader.ValueTextEquals("attributes"))
 					{
 						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
 						if (reader.TokenType == JsonTokenType.Null) { obj.Attributes = null; break; }
@@ -986,6 +998,7 @@ public sealed partial class IncidentsSearchResponse
 }
 public sealed partial class IncidentsSearchResponseIncluded
 {
+	public String? Id { get; set; }
 	public IncidentResponseDataAttributes? Attributes { get; set; }
 }
 public sealed partial class TextBoxValue
