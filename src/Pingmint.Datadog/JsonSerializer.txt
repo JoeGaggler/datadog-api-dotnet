@@ -63,5 +63,17 @@ IncidentsSearchResponseIncluded
 - "id" => Id : String
 - "attributes" => Attributes : IncidentResponseDataAttributes
 
+IncidentTodosResponse
+- "data" => Data : [IncidentTodosResponseData]
+
+IncidentTodosResponseData
+- "id" => Id : String
+- "attributes" => Attributes : IncidentTodosResponseDataAttributes
+
+IncidentTodosResponseDataAttributes
+- "created" => Created : String
+- "content" => Content : String
+- "modified" => Modified : String
+
 TextBoxValue
 - "value" => Value : String

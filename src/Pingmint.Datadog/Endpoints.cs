@@ -10,6 +10,8 @@ public static class Endpoints
 
     public static String Incident(String id, String incidents = Incidents) => $"{incidents}/{id}";
 
+    public static String IncidentTodos(String id, String incidents = Incidents) => $"{incidents}/{id}/relationships/todos";
+
     public static String SearchIncidents(String query = "state:active", String sort = "-created", String incidents = Incidents) =>
         $"{incidents}/search?query={HttpUtility.UrlEncode(query)}&sort={sort}";
 }

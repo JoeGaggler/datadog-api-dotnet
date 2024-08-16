@@ -18,6 +18,9 @@ public partial class JsonSerializer :
     JsonSerializer.ISerializes<IncidentResponseDataAttributesFields>,
     JsonSerializer.ISerializes<IncidentsSearchResponse>,
     JsonSerializer.ISerializes<IncidentsSearchResponseIncluded>,
+    JsonSerializer.ISerializes<IncidentTodosResponse>,
+    JsonSerializer.ISerializes<IncidentTodosResponseData>,
+    JsonSerializer.ISerializes<IncidentTodosResponseDataAttributes>,
     JsonSerializer.ISerializes<TextBoxValue>
 {
 	public interface ISerializes<T> where T : notnull
@@ -710,6 +713,156 @@ public partial class JsonSerializer :
 			}
 		}
 	}
+	public static void Serialize(Utf8JsonWriter writer, IncidentTodosResponse? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Data is { } localData)
+		{
+			writer.WritePropertyName("data");
+			Serialize6(writer, localData);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentTodosResponse obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("data"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Data = null; break; }
+						if (reader.TokenType == JsonTokenType.StartArray) { obj.Data = Deserialize6(ref reader, obj.Data ?? new()); break; }
+						throw new InvalidOperationException($"unexpected token type for Data: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
+	public static void Serialize(Utf8JsonWriter writer, IncidentTodosResponseData? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Id is { } localId)
+		{
+			writer.WritePropertyName("id");
+			writer.WriteStringValue(localId);
+		}
+		if (value.Attributes is { } localAttributes)
+		{
+			writer.WritePropertyName("attributes");
+			Serialize(writer, localAttributes);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentTodosResponseData obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("id"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Id = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Id = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Id: {reader.TokenType} ");
+					}
+					else if (reader.ValueTextEquals("attributes"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Attributes = null; break; }
+						if (reader.TokenType == JsonTokenType.StartObject) { obj.Attributes = new(); Deserialize(ref reader, obj.Attributes); break; }
+						throw new InvalidOperationException($"unexpected token type for Attributes: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
+	public static void Serialize(Utf8JsonWriter writer, IncidentTodosResponseDataAttributes? value)
+	{
+		if (value is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartObject();
+		if (value.Created is { } localCreated)
+		{
+			writer.WritePropertyName("created");
+			writer.WriteStringValue(localCreated);
+		}
+		if (value.Content is { } localContent)
+		{
+			writer.WritePropertyName("content");
+			writer.WriteStringValue(localContent);
+		}
+		if (value.Modified is { } localModified)
+		{
+			writer.WritePropertyName("modified");
+			writer.WriteStringValue(localModified);
+		}
+		writer.WriteEndObject();
+	}
+
+	public static void Deserialize(ref Utf8JsonReader reader, IncidentTodosResponseDataAttributes obj)
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.PropertyName:
+				{
+					if (reader.ValueTextEquals("created"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Created = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Created = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Created: {reader.TokenType} ");
+					}
+					else if (reader.ValueTextEquals("content"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Content = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Content = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Content: {reader.TokenType} ");
+					}
+					else if (reader.ValueTextEquals("modified"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Modified = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Modified = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Modified: {reader.TokenType} ");
+					}
+
+					reader.Skip();
+					reader.Skip();
+					break;
+				}
+				case JsonTokenType.EndObject: { return; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
 	public static void Serialize(Utf8JsonWriter writer, TextBoxValue? value)
 	{
 		if (value is null) { writer.WriteNullValue(); return; }
@@ -933,6 +1086,37 @@ public partial class JsonSerializer :
 			}
 		}
 	}
+	private static void Serialize6<TArray>(Utf8JsonWriter writer, TArray array) where TArray : ICollection<IncidentTodosResponseData>
+	{
+		if (array is null) { writer.WriteNullValue(); return; }
+		writer.WriteStartArray();
+		foreach (var item in array)
+		{
+			Serialize(writer, item);
+		}
+		writer.WriteEndArray();
+	}
+
+	private static TArray Deserialize6<TArray>(ref Utf8JsonReader reader, TArray array) where TArray : ICollection<IncidentTodosResponseData>
+	{
+		while (true)
+		{
+			if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+			switch (reader.TokenType)
+			{
+				case JsonTokenType.Null: { reader.Skip(); break; }
+				case JsonTokenType.StartObject:
+				{
+					IncidentTodosResponseData item = new();
+					Deserialize(ref reader, item);
+					array.Add(item);
+					break;
+				}
+				case JsonTokenType.EndArray: { return array; }
+				default: { reader.Skip(); break; }
+			}
+		}
+	}
 }
 public sealed partial class SeriesRequest
 {
@@ -1000,6 +1184,21 @@ public sealed partial class IncidentsSearchResponseIncluded
 {
 	public String? Id { get; set; }
 	public IncidentResponseDataAttributes? Attributes { get; set; }
+}
+public sealed partial class IncidentTodosResponse
+{
+	public List<IncidentTodosResponseData>? Data { get; set; }
+}
+public sealed partial class IncidentTodosResponseData
+{
+	public String? Id { get; set; }
+	public IncidentTodosResponseDataAttributes? Attributes { get; set; }
+}
+public sealed partial class IncidentTodosResponseDataAttributes
+{
+	public String? Created { get; set; }
+	public String? Content { get; set; }
+	public String? Modified { get; set; }
 }
 public sealed partial class TextBoxValue
 {
