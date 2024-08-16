@@ -810,6 +810,11 @@ public partial class JsonSerializer :
 			writer.WritePropertyName("created");
 			writer.WriteStringValue(localCreated);
 		}
+		if (value.Completed is { } localCompleted)
+		{
+			writer.WritePropertyName("completed");
+			writer.WriteStringValue(localCompleted);
+		}
 		if (value.Content is { } localContent)
 		{
 			writer.WritePropertyName("content");
@@ -838,6 +843,13 @@ public partial class JsonSerializer :
 						if (reader.TokenType == JsonTokenType.Null) { obj.Created = null; break; }
 						if (reader.TokenType == JsonTokenType.String) { obj.Created = reader.GetString(); break; }
 						throw new InvalidOperationException($"unexpected token type for Created: {reader.TokenType} ");
+					}
+					else if (reader.ValueTextEquals("completed"))
+					{
+						if (!reader.Read()) throw new InvalidOperationException("Unable to read next token from Utf8JsonReader");
+						if (reader.TokenType == JsonTokenType.Null) { obj.Completed = null; break; }
+						if (reader.TokenType == JsonTokenType.String) { obj.Completed = reader.GetString(); break; }
+						throw new InvalidOperationException($"unexpected token type for Completed: {reader.TokenType} ");
 					}
 					else if (reader.ValueTextEquals("content"))
 					{
@@ -1197,6 +1209,7 @@ public sealed partial class IncidentTodosResponseData
 public sealed partial class IncidentTodosResponseDataAttributes
 {
 	public String? Created { get; set; }
+	public String? Completed { get; set; }
 	public String? Content { get; set; }
 	public String? Modified { get; set; }
 }
