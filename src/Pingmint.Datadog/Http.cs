@@ -20,6 +20,20 @@ public static class Http
         return request;
     }
 
+    public static HttpRequestMessage CreateDistributionPointsHttpRequest(DistributionRequest model, String key, String endpoint = Endpoints.DistributionPoints)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+
+        // Headers
+        request.Headers.Add("DD-API-KEY", key);
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+        // Create compressed json content
+        request.Content = new DistributionPointsRequestHttpContent(model);
+
+        return request;
+    }
+
     public static HttpRequestMessage CreateAppGetHttpRequest(String apiKey, String applicationKey, String endpoint)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
@@ -63,6 +77,37 @@ public class SeriesRequestHttpContent : HttpContent
             using (var writer = new Utf8JsonWriter(compressStream, new JsonWriterOptions() { Indented = true, MaxDepth = 8 }))
             {
                 JsonSerializer.Serialize(writer, model);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    protected override bool TryComputeLength(out long length)
+    {
+        length = 0;
+        return false;
+    }
+}
+
+public class DistributionPointsRequestHttpContent : HttpContent
+{
+    private readonly DistributionRequest model;
+
+    public DistributionPointsRequestHttpContent(DistributionRequest model)
+    {
+        this.model = model;
+        Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+        Headers.ContentEncoding.Add("gzip");
+    }
+
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+    {
+        using (var compressStream = new GZipStream(stream, CompressionLevel.Optimal, leaveOpen: true))
+        {
+            using (var writer = new Utf8JsonWriter(compressStream, new JsonWriterOptions() { Indented = true, MaxDepth = 8 }))
+            {
+                DistributionJsonSerializer.Serialize(writer, model);
             }
         }
 

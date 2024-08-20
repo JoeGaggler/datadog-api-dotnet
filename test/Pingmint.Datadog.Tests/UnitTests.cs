@@ -40,8 +40,40 @@ public class UnitTests
             }
         };
 
-        var outJson = Pingmint.Datadog.SeriesJsonSerializer.ToJsonString(model);
+        var outJson = Pingmint.Datadog.JsonSerializer.ToJsonString(model);
 
+        Console.WriteLine(outJson);
+    }
+
+    [Test]
+    public async Task Test2()
+    {
+        var model = new DistributionRequest
+        {
+            Series = new List<DistributionSeries>
+            {
+                new DistributionSeries
+                {
+                    Metric = "test.distribution",
+                    Points = new List<DistributionPoint>
+                    {
+                        new() {
+                            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                            Value = [
+                                10 + Random.Shared.NextInt64(10) - 5,
+                                20 + Random.Shared.NextInt64(4) - 2,
+                                50 + Random.Shared.NextInt64(20) - 10,
+                                50 + Random.Shared.NextInt64(100) - 50,
+                                80 + Random.Shared.NextInt64(20) - 10,
+                                100 - Random.Shared.NextInt64(10),
+                            ]
+                        },
+                    },
+                }
+            }
+        };
+
+        var outJson = Pingmint.Datadog.DistributionJsonSerializer.ToJsonString(model);
         Console.WriteLine(outJson);
     }
 }
