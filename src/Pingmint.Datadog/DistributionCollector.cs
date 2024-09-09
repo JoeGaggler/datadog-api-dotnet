@@ -14,43 +14,36 @@ public class DistributionCollector
 
     public void Add(String metric, List<String> tags, DistributionPoint point)
     {
-        lock (lockObject)
+        // This performs a linear search of the list of series when tags are used, but the list is expected to be small.
+        DistributionSeries? seriesToUpdate = null;
+        foreach (var candidateSeries in series)
         {
-            // This performs a linear search of the list of series when tags are used, but the list is expected to be small.
-            DistributionSeries? seriesToUpdate = null;
-            foreach (var candidateSeries in series)
-            {
-                if (candidateSeries.Metric != metric) { continue; }
-                if (candidateSeries.Tags is not { } candidateTags || candidateTags.Count == 0) { continue; }
-                if (!candidateTags.SequenceEqual(tags)) { continue; }
+            if (candidateSeries.Metric != metric) { continue; }
+            if (candidateSeries.Tags is not { } candidateTags || candidateTags.Count == 0) { continue; }
+            if (!candidateTags.SequenceEqual(tags)) { continue; }
 
-                seriesToUpdate = candidateSeries;
-                break;
-            }
-
-            if (seriesToUpdate is null)
-            {
-                seriesToUpdate = new()
-                {
-                    Metric = metric,
-                    Points = [],
-                    Tags = tags,
-                };
-                series.Add(seriesToUpdate);
-            }
-
-            seriesToUpdate.Points!.Add(point);
+            seriesToUpdate = candidateSeries;
+            break;
         }
+
+        if (seriesToUpdate is null)
+        {
+            seriesToUpdate = new()
+            {
+                Metric = metric,
+                Points = [],
+                Tags = tags,
+            };
+            series.Add(seriesToUpdate);
+        }
+
+        seriesToUpdate.Points!.Add(point); // Points is always initialized to an empty list before adding to the series.
     }
 
     public DistributionRequest? GetRequest()
     {
-        List<DistributionSeries> distToSubmit;
-        lock (lockObject)
-        {
-            distToSubmit = series;
-            series = [];
-        }
+        List<DistributionSeries> distToSubmit = series;
+        this.series = [];
 
         if (distToSubmit.Count == 0)
         {
