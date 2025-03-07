@@ -72,4 +72,17 @@ public class DistributionCollector
         };
         return model;
     }
+
+    public IDisposable AddScopeDurationSeconds(String metric, List<String> tags)
+    {
+        return new StopwatchDisposable((s) =>
+        {
+            var point = new DistributionPoint()
+            {
+                Value = [s.TotalSeconds],
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            };
+            Add(metric, tags, point);
+        });
+    }
 }

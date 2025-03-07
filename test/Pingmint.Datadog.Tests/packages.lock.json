@@ -1,7 +1,7 @@
 {
   "version": 2,
   "dependencies": {
-    "net8.0": {
+    "net9.0": {
       "coverlet.collector": {
         "type": "Direct",
         "requested": "[3.1.2, )",
@@ -139,10 +139,10 @@
       },
       "Pingmint": {
         "type": "Transitive",
-        "resolved": "0.1.23",
-        "contentHash": "6xvoHOmSvTGdqMhukwM4JG8XoJe/00eCvMZvc36R+dPKDflxUVaP39FqhXXsCzXEl2NAmfAdmP2fYKjNQSqddg==",
+        "resolved": "0.3.29",
+        "contentHash": "T89jUp9gwhYT0WTq34fn46dcf7cL/DkHrzwLqw9MhM66kRHcnEBb5XEmW7OnJXAE5hP80TxZZpN/D1H3cDSIRA==",
         "dependencies": {
-          "System.Memory.Data": "8.0.0"
+          "System.Memory.Data": "9.0.0"
         }
       },
       "System.Collections": {
@@ -280,11 +280,8 @@
       },
       "System.Memory.Data": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "iNz0OOSj4bcOdVvyBzaDwJe0aA2nbGVQzUGAaN4bngJu2g8tMncWb7SsR/EdSMCyf0J3KHMCYu3QR/bnckxvdg==",
-        "dependencies": {
-          "System.Text.Json": "8.0.0"
-        }
+        "resolved": "9.0.0",
+        "contentHash": "CxUGXLXdbG7hxdQCRdxQKwq//OtYfxKsKyy6oYjSr9zpSvza5rW9TxokNasSLfmETRKDTfu1zqW8RQKokyKw/Q=="
       },
       "System.ObjectModel": {
         "type": "Transitive",
@@ -462,19 +459,6 @@
           "System.Text.Encoding": "4.0.11"
         }
       },
-      "System.Text.Encodings.Web": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "yev/k9GHAEGx2Rg3/tU6MQh4HGBXJs70y7j1LaM1i/ER9po+6nnQ6RRqTJn1E7Xu0fbIFK80Nh5EoODxrbxwBQ=="
-      },
-      "System.Text.Json": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "OdrZO2WjkiEG6ajEFRABTRCi/wuXQPxeV6g8xvUJqdxMvvuCCEk86zPla8UiIQJz3durtUEbNyY/3lIhS0yZvQ==",
-        "dependencies": {
-          "System.Text.Encodings.Web": "8.0.0"
-        }
-      },
       "System.Text.RegularExpressions": {
         "type": "Transitive",
         "resolved": "4.1.0",
@@ -561,7 +545,7 @@
       "pingmint.datadog": {
         "type": "Project",
         "dependencies": {
-          "Pingmint": "[0.1.23, )"
+          "Pingmint": "[0.3.29, )"
         }
       }
     }

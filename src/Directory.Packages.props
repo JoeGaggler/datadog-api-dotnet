@@ -4,6 +4,6 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Pingmint" Version="0.1.23" />
+    <PackageVersion Include="Pingmint" Version="0.3.29" />
   </ItemGroup>
 </Project>

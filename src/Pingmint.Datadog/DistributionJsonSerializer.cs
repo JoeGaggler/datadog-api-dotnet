@@ -5,10 +5,7 @@ using System.Text.Json;
 
 namespace Pingmint.Datadog;
 
-public partial class DistributionJsonSerializer :
-    JsonSerializer.ISerializes<DistributionRequest>,
-    JsonSerializer.ISerializes<DistributionSeries>,
-    JsonSerializer.ISerializes<DistributionPoint>
+public partial class DistributionJsonSerializer
 {
     public static void Serialize(Utf8JsonWriter writer, DistributionRequest? value)
     {
